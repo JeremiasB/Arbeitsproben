@@ -32,7 +32,11 @@
 		<ul class="pure-menu-list">
             <li class="pure-menu-item"><a class="pure-menu-link" href="/show">back to main</a></li>
             <li class="pure-menu-item"><a class="pure-menu-link"href="/edit/{pagename}">Edit</a></li>
-            <li> Other stuff</li>
+            {sitemap}
+            <li class="pure-menu-item"><form class="pure-form" action="/create" method="post">
+                <input type="text" name="sitename" value="Neue Seite!" style="color: black" pattern="[a-zA-Z0-9_]*" title="Nur Zahlen und Buchstaben">
+                <input class="pure-button" type="submit" value="Erstellen!">
+            </form>
         </ul>
         </div>
         <div class="pure-u-1 pure-u-md-5-6" id="main">

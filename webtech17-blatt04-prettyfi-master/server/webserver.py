@@ -232,6 +232,18 @@ class Response:
             self.send(500, body="Unable to open template %s." % template)
             return
         templ = f.read()
+        print("reading template")
+        t =""
+        if "sitemap" in dictionary:
+            for i in range(len(dictionary["sitemap"])):
+                t = t + "<li class=\"pure-menu-item\"> <a class=\"pure-menu-link\" href=\"/show/"\
+                    + dictionary["sitemap"][i] + "\" >" + dictionary["sitemap"][i] + "</a></li>\n"
+                print(t)
+
+        dictionary["sitemap"] = t
+
+
+
         self.send(code=code, headers=headers,
                   body=templ.format(**dictionary)) # Substitute with dictionary values/keys
         f.close()

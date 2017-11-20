@@ -21,17 +21,15 @@ class NoSuchPageError(Exception):
 
 
 class WikiApp(webserver.App):
-    """
-    Webanwendung zum kollaborativen Schreiben (wiki).
 
-    Diese sehr einfache Anwendung demonstriert ein simples Wiki.
-    """
+    sitelist = os.listdir("./data")
 
     def register_routes(self):
         self.add_route("", self.show)
         self.add_route("show(/(?P<pagename>\w+))?", self.show)
         self.add_route("edit/(?P<pagename>\w+)", self.edit)
         self.add_route("save/(?P<pagename>\w+)", self.save)
+        self.add_route("create", self.create)
 
     def read_page(self, pagename):
         """Read wiki page from data directory or raise NoSuchPageError."""
@@ -68,7 +66,7 @@ class WikiApp(webserver.App):
 
     def show(self, request, response, pathmatch=None):
         """Evaluate request and construct response."""
-
+        self.sitelist = os.listdir("./data")
         try:
             pagename = pathmatch.group('pagename') or "main"
         except IndexError:
@@ -84,10 +82,12 @@ class WikiApp(webserver.App):
         # show page
         response.send_template('templates/wiki/show.html',
                                    {'text': self.markup(text),
-                                   'pagename': pagename})
+                                   'pagename': pagename,
+                                    "sitemap": self.sitelist})
 
     def edit(self, request, response, pathmatch=None):
         """Display wiki page for editing."""
+        self.sitelist = os.listdir("./data")  # Making sure our filelist is recent
 
         try:
             pagename = pathmatch.group('pagename') or "main"
@@ -103,7 +103,27 @@ class WikiApp(webserver.App):
         # fill template and show
         response.send_template('templates/wiki/edit.html',
                                    {'text': text,
-                                   'pagename': pagename})
+                                   'pagename': pagename,
+                                    "sitemap" : self.sitelist, })
+
+    def create(self, request, response, pathmatch=None):
+            #create new page for editing or show existing one.
+        self.sitelist = os.listdir("./data")  #Making sure our filelist is recent
+
+        text = "Erstelle deine Seite!"
+        pagename = request.params["sitename"] #Abfrage des Values aus dem Format!
+        if pagename in self.sitelist:
+            response.send_redirect("/edit/" + pagename)
+        else:
+            # fill template and show
+            response.send_template('templates/wiki/edit.html',
+                                   {'text': text,
+                                   'pagename': pagename,
+                                    "sitemap" : self.sitelist,})
+
+
+
+
 
     def save(self, request, response, pathmatch=None):
         """Evaluate request and construct response."""
@@ -130,6 +150,7 @@ class WikiApp(webserver.App):
         f = open("data/" + pagename, "w", encoding='utf-8', newline='')
         f.write(wikitext)
         f.close()
+        #update sitelist
 
         response.send_redirect("/show/"+pagename)
 
@@ -137,4 +158,5 @@ if __name__ == '__main__':
     s = webserver.Webserver()
     s.add_app(WikiApp())
     s.add_app(StaticApp(prefix='static', path='static'))
+    #create Sitelist
     s.serve()
