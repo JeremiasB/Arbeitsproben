@@ -1,0 +1,32 @@
+body { margin: 15px;
+       padding: 10px;
+       background: #ddd; 
+
+}
+
+.wikitext {
+	background: white;
+	padding: 10px;
+	margin: 10px;
+}
+
+.wikiedit {
+	display: block;
+	min-height: 20em;
+	width: 80%;
+}
+
+#navbar{
+	text-align: center;
+	background-color: darkgray;
+	color: white;
+	border-width: 4px;
+}
+#main {
+
+	background-color: white;
+	border: 3px black;  }
+#bottom {
+	padding: 20px;
+	background-color: darkgray;
+}
