@@ -234,6 +234,8 @@ class Response:
         templ = f.read()
         print("reading template")
         t =""
+        # FS: Dies ist der falsche Ort, das HTML zusammenzubauen. Das gehört in die wiki.py, am besten als eigene Funktion createSitemap().
+        # Der Webserver ist nicht für anwendungsspezifische Templateeigenschaften zuständig. -1P
         if "sitemap" in dictionary:
             for i in range(len(dictionary["sitemap"])):
                 t = t + "<li class=\"pure-menu-item\"> <a class=\"pure-menu-link\" href=\"/show/"\

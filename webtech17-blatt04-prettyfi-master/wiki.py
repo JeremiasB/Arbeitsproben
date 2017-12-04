@@ -107,15 +107,19 @@ class WikiApp(webserver.App):
                                     "sitemap" : self.sitelist, })
 
     def create(self, request, response, pathmatch=None):
-            #create new page for editing or show existing one.
+        #create new page for editing or show existing one.
         self.sitelist = os.listdir("./data")  #Making sure our filelist is recent
 
         text = "Erstelle deine Seite!"
         pagename = request.params["sitename"] #Abfrage des Values aus dem Format!
+        # FS: Das schlägt fehl, wenn nichts in der Textbox eingegeben wird.
+        # Zudem fehlt hier eine Abfrage, ob pagename nur \w+ enthält. Ja, ich habe das pattern="..." gesehen,
+        # allerdings gibt es in der Internet-Programierung die eine goldene Regel: Vertraue niemals dem Client. (Requests kann man fälschen...) -1P
         if pagename in self.sitelist:
             response.send_redirect("/edit/" + pagename)
         else:
             # fill template and show
+            # Hier soll auf die /edit Seite weitergeleitet werden. -1P
             response.send_template('templates/wiki/edit.html',
                                    {'text': text,
                                    'pagename': pagename,
@@ -143,7 +147,9 @@ class WikiApp(webserver.App):
             # no text given: error
             response.send_template("templates/wiki/wikierror.html",
                                {'error':'No wikitext given.',
+                                'pagename': 'Error', # FS: Von mir hinzugefügt.
                                 'text':'save action needs wikitext'}, code=500)
+                                # FS: Hier fehlt eine übergabe von "pagename". -1P
             return
 
         # ok, save text
